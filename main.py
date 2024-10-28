@@ -27,7 +27,9 @@ if 'search_keyword' not in st.session_state:
 # def changepage(name): st.session_state.current_page = name
 
 # 기업명 저장 함수
-def saveKeyword(keyword): st.session_state.search_keyword = keyword
+def saveKeyword(keyword): 
+    st.session_state.search_keyword = keyword
+    # print("저장된 기업명:", st.session_state.search_keyword)
 
 
 # 메인 사이트 이름
@@ -137,7 +139,7 @@ with col1:
 
 with col2:
     # 파일 업로드 css 수정
-    col_title, col_btn = st.columns(2) 
+    col_title, col_btn, col_checked = st.columns([1,1,0.1]) 
     with col_title:
         st.write("➕재무재표 업로드")
         css = '''
@@ -150,7 +152,7 @@ with col2:
 
         st.markdown(css, unsafe_allow_html=True)
     with col_btn:
-        st.file_uploader("")
+        uploaded_file = st.file_uploader("")
 
         css = '''
             <style>
@@ -171,11 +173,16 @@ with col2:
                 float: right;
                 padding-top: 0;
             }
-
+            [data-testid='stFileUploaderFile'] {
+                display: none;
+            }
         </style>
         '''
-
         st.markdown(css, unsafe_allow_html=True)
+        
+    with col_checked:
+        if uploaded_file is not None:
+            st.write("✅")
 
 
 
