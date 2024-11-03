@@ -1,10 +1,11 @@
 import streamlit as st
 import os
 from streamlit_extras.stylable_container import stylable_container
+import requests
 
 # API KEY 관리 (로컬/streamlit)
-# os.environ["OPENAI_API_KEY"] = os.getenv("openai_api_key")
-# os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
+os.environ["api_key"] = os.getenv("api_key")
+# os.environ["api_key"] = st.secrets["api_key"]
 
 # 언어모델 관련 import 정리
 #
@@ -21,6 +22,12 @@ from streamlit_extras.stylable_container import stylable_container
 if 'search_keyword' not in st.session_state:
     st.session_state.search_keyword = ""
 
+# url 저장
+st.session_state.request_url = "http://172.20.10.5:8000/"
+
+#upload file
+if 'uploaded_file' not in st.session_state:
+    st.session_state.uploaded_file = None
 
 # [전역 데이터 관련 함수 정리]
 # 페이지 이동 함수
@@ -84,6 +91,18 @@ with col2:
     if st.page_link("pages/result_page1.py", label="🔍"):
         saveKeyword(search_text)
         # changepage("page1")
+        
+        # api 연결
+        if st.session_state.uploaded_file is not None:
+            file = {'file': (st.session_state.uploaded_file.name, st.session_state.uploaded_file, st.session_state.uploaded_file.type)}
+
+            datas = {
+                'company':search_text
+            }
+            
+            print("post-test:", datas)
+            requests.post(st.session_state.request_url+"getCompanyAnalysis", files=file, data=datas)
+
 
 # 하단 설명버튼/첨부버튼 스타일
 col1, col2 = st.columns(2) 
@@ -152,8 +171,9 @@ with col2:
 
         st.markdown(css, unsafe_allow_html=True)
     with col_btn:
-        uploaded_file = st.file_uploader("")
-
+        uploaded_file = st.file_uploader("", type=['pdf'])
+        st.session_state.uploaded_file = uploaded_file
+        
         css = '''
             <style>
             [data-testid='stWidgetLabel'] {
@@ -181,7 +201,7 @@ with col2:
         st.markdown(css, unsafe_allow_html=True)
         
     with col_checked:
-        if uploaded_file is not None:
+        if st.session_state.uploaded_file is not None:
             st.write("✅")
 
 
