@@ -36,7 +36,7 @@ def run_assistant_with_html(thread, assistant_id):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant_id,
-        model="gpt-4-0613"  # 최신 모델 사용
+        model="gpt-4-turbo"  # 최신 모델 사용
     )
     print(f"Assistant run started with ID: {run.id}")
     return run
@@ -52,7 +52,7 @@ def add_message_and_run(thread, assistant_id, user_message):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant_id,
-        model="gpt-4-0613"  # 최신 모델 사용
+        model="gpt-4-turbo"  # 최신 모델 사용
     )
     return run
 
